@@ -6,8 +6,10 @@ import { TURNS } from './constants/constants';
 import './App.css';
 
 export const App = () => {
-  const [board, setBoard] = useState(Array(9).fill(null));
-  const [turn, setTurn] = useState(TURNS.x);
+  const [board, setBoard] = useState(
+    () => JSON.parse(localStorage.getItem('board')) ?? Array(9).fill(null)
+  );
+  const [turn, setTurn] = useState(() => localStorage.getItem('turn') ?? TURNS.x);
   const [winner, setWinner] = useState(null);
 
   const updateBoard = (index) => {
@@ -17,13 +19,20 @@ export const App = () => {
     newBoard[index] = turn;
     setBoard(newBoard);
 
-    setTurn(turn === TURNS.x ? TURNS.o : TURNS.x);
+    const newTurn = turn === TURNS.x ? TURNS.o : TURNS.x;
+    setTurn(newTurn);
+
+    localStorage.setItem('board', JSON.stringify(newBoard));
+    localStorage.setItem('turn', newTurn);
   };
 
   const resetGame = () => {
     setBoard(Array(9).fill(null));
     setTurn(TURNS.x);
     setWinner(null);
+
+    localStorage.removeItem('board');
+    localStorage.removeItem('turn');
   };
 
   useEffect(() => {
