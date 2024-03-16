@@ -1,35 +1,58 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useEffect, useState } from 'react';
+import confetti from 'canvas-confetti';
+import { Square, WinnerModal } from './components';
+import { checkEndGame, checkWinner } from './helpers';
+import { TURNS } from './constants/constants';
+import './App.css';
 
-function App() {
-  const [count, setCount] = useState(0)
+export const App = () => {
+  const [board, setBoard] = useState(Array(9).fill(null));
+  const [turn, setTurn] = useState(TURNS.x);
+  const [winner, setWinner] = useState(null);
+
+  const updateBoard = (index) => {
+    if (board[index] || winner) return;
+
+    const newBoard = [...board];
+    newBoard[index] = turn;
+    setBoard(newBoard);
+
+    setTurn(turn === TURNS.x ? TURNS.o : TURNS.x);
+  };
+
+  const resetGame = () => {
+    setBoard(Array(9).fill(null));
+    setTurn(TURNS.x);
+    setWinner(null);
+  };
+
+  useEffect(() => {
+    const newWinner = checkWinner(board);
+
+    if (newWinner) {
+      setWinner(newWinner);
+      confetti();
+    } else if (checkEndGame(board)) {
+      setWinner(false);
+    }
+  }, [board]);
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+    <main className="game">
+      <h1>Tic Tac Toe</h1>
 
-export default App
+      <section className="board">
+        {board.map((_, index) => (
+          <Square key={index} index={index} updateBoard={updateBoard}>
+            {board[index]}
+          </Square>
+        ))}
+      </section>
+      <section className="turn">
+        <Square isSelected={turn === TURNS.x}>{TURNS.x}</Square>
+        <Square isSelected={turn === TURNS.o}>{TURNS.o}</Square>
+      </section>
+      <WinnerModal resetGame={resetGame} winner={winner} />
+    </main>
+  );
+};

@@ -1,42 +1,71 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+.board {
+  display: grid;
+  grid-template-columns: repeat(3, 100px);
+  grid-template-rows: repeat(3, 100px);
+  gap: 10px;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.board .square {
+  border: 1px solid #fff;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+.square {
+  border-radius: 5px;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  font-size: 48px;
 }
 
-.card {
-  padding: 2em;
+.turn {
+  display: flex;
+  justify-content: center;
+  margin-top: 16px;
+  gap: 10px;
 }
 
-.read-the-docs {
-  color: #888;
+.winner .square,
+.turn .square {
+  height: 70px;
+  width: 70px;
+  pointer-events: none;
+}
+
+.square.selected {
+  border: 1px solid #ddd;
+}
+
+.winner {
+  position: absolute;
+  inset: 0;
+  background-color: #111c;
+  display: grid;
+  place-items: center;
+}
+
+.winner .winner__content {
+  background-color: #222;
+  padding: 32px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  min-width: 230px;
+}
+
+.winner .winner__button {
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  background-color: transparent;
+  text-transform: uppercase;
+  cursor: pointer;
 }
